@@ -1,0 +1,18 @@
+package com.universecode.unievents;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
+@SpringBootApplication
+public class UniEventsApplication extends SpringBootServletInitializer {
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(UniEventsApplication.class);
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(UniEventsApplication.class, args);
+    }
+}
