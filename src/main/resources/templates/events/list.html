@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Eventos</title>
+</head>
+<body>
+<h1>Eventos</h1>
+<a th:href="@{/events/new}">Novo Evento</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Título</th>
+        <th>Data</th>
+        <th>Localização</th>
+        <th>Site</th>
+        <th>Redes Sociais</th>
+        <th>Ações</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event : ${events}">
+        <td th:text="${event.title}"></td>
+        <td th:text="${event.date}"></td>
+        <td th:text="${event.location.street + ', ' + event.location.number + ' - ' + event.location.neighborhood + ', ' + event.location.city + ' - ' + event.location.state}"></td>
+        <td>
+            <a th:if="${event.website}" th:href="${event.website}" th:text="${event.website}"></a>
+            <span th:unless="${event.website}">N/A</span>
+        </td>
+        <td>
+            <ul>
+                <li th:each="social : ${event.socialNetworks}">
+                    <a th:href="${social}" th:text="${social}"></a>
+                </li>
+                <li th:if="${#lists.isEmpty(event.socialNetworks)}">Nenhuma rede social cadastrada.</li>
+            </ul>
+        </td>
+        <td>
+            <a th:href="@{/events/edit/{id}(id=${event.id})}">Editar</a>
+            <a th:href="@{/events/delete/{id}(id=${event.id})}">Excluir</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

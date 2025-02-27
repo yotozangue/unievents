@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário de Evento</title>
+    <script>
+        function addSocialNetwork() {
+            const container = document.getElementById("socialNetworksContainer");
+            const div = document.createElement("div");
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.name = "socialNetworks";
+
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.textContent = "Remover";
+            removeBtn.onclick = () => div.remove();
+
+            div.appendChild(input);
+            div.appendChild(removeBtn);
+            div.appendChild(document.createElement("br"));
+            container.appendChild(div);
+        }
+
+        function removeSocialNetwork(button) {
+            button.parentElement.remove();
+        }
+
+        function lookupCep() {
+            const cep = document.getElementById("zipCode").value;
+            if (cep) {
+                const url = `https://viacep.com.br/ws/${cep}/json/`;
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            if (data.logradouro) {
+                                document.getElementById("street").value = data.logradouro;
+                            }
+                            if (data.bairro) {
+                                document.getElementById("neighborhood").value = data.bairro;
+                            }
+                            if (data.localidade) {
+                                document.getElementById("city").value = data.localidade;
+                            }
+                            if (data.uf) {
+                                document.getElementById("state").value = data.uf;
+                            }
+                            if (data.complemento) {
+                                document.getElementById("complement").value = data.complemento;
+                            }
+                        } else {
+                            alert("CEP não encontrado.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro ao buscar o CEP:", error);
+                    });
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Formulário de Evento</h1>
+<form th:action="${event.id != null} ? @{/events/update/{id}(id=${event.id})} : @{/events}" th:object="${event}" method="post">
+    <label for="title">Título:</label>
+    <input type="text" id="title" th:field="*{title}" required>
+    <br>
+
+    <label for="date">Data:</label>
+    <input type="date" id="date" th:field="*{date}" required>
+    <br>
+
+    <fieldset>
+        <legend>Localização</legend>
+        <label for="street">Rua:</label>
+        <input type="text" id="street" th:field="*{location.street}" required>
+        <br>
+
+        <label for="number">Número:</label>
+        <input type="text" id="number" th:field="*{location.number}" required>
+        <br>
+
+        <label for="neighborhood">Bairro:</label>
+        <input type="text" id="neighborhood" th:field="*{location.neighborhood}" required>
+        <br>
+
+        <label for="city">Cidade:</label>
+        <input type="text" id="city" th:field="*{location.city}" required>
+        <br>
+
+        <label for="state">Estado:</label>
+        <input type="text" id="state" th:field="*{location.state}" required>
+        <br>
+
+        <label for="zipCode">CEP:</label>
+        <input type="text" id="zipCode" th:field="*{location.zipCode}" required onblur="lookupCep()">
+        <br>
+
+        <label for="complement">Complemento:</label>
+        <input type="text" id="complement" th:field="*{location.complement}">
+        <br>
+    </fieldset>
+
+    <label>Redes Sociais:</label>
+    <div id="socialNetworksContainer">
+        <div th:each="social, iterStat : *{socialNetworks}">
+            <input type="text" name="socialNetworks" th:value="${social}">
+            <button type="button" onclick="removeSocialNetwork(this)">Remover</button>
+            <br>
+        </div>
+    </div>
+    <button type="button" onclick="addSocialNetwork()">Adicionar Rede Social</button>
+    <br>
+
+    <label for="site">Site:</label>
+    <input type="url" id="site" th:field="*{website}">
+    <br>
+
+    <label for="time">Horário:</label>
+    <input type="time" id="time" th:field="*{time}" required>
+    <br>
+
+    <button type="submit">Salvar</button>
+</form>
+
+<a th:href="@{/events}">Voltar</a>
+</body>
+</html>

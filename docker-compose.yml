@@ -7,9 +7,7 @@ services:
       POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
       POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
-      - "${POSTGRES_PORT}:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - "${SPRING_DATASOURCE_PORT}:${SPRING_DATASOURCE_PORT}"
 
   app:
     build: .
@@ -23,6 +21,3 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       SERVER_PORT: ${SERVER_PORT}
-
-volumes:
-  postgres_data:
